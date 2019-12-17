@@ -12,16 +12,21 @@
 		</style>
 		<script>
 			$(document).ready(function() {
-				$.get("/Log/LogNames", function(data, status) {
-					for(item of data) {
-						$("#logSelect").append(
-							`<option value='${item}' ${item == "default" ? "SELECTED" : ""}>
-								${item}
-							</option>`);
-					}
-				});
+				reloadLogNames();
 			});
-			
+		
+			function reloadLogNames() {
+                                $.get("/Log/LogNames", function(data, status) {
+                                        $("#logSelect").empty();
+					for(item of data) {
+                                                $("#logSelect").append(
+                                                        `<option value='${item}'>
+                                                                ${item}
+                                                        </option>`);
+                                        }
+                                });
+                        }
+
 			var reloadInterval;
 
 			function clearLog() {
@@ -34,6 +39,7 @@
 			
 			function reloadIframe() {
 				$("#logFrame").attr("src", `/ShowLog?log=${log}`);
+				reloadLogNames();
 			}
 
 			function toggleReloadIframe() {
