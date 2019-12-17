@@ -20,7 +20,7 @@
                                         $("#logSelect").empty();
 					for(item of data) {
                                                 $("#logSelect").append(
-                                                        `<option value='${item}'>
+							`<option value='${item}' ${item == log ? "SELECTED" : ""}>
                                                                 ${item}
                                                         </option>`);
                                         }
@@ -30,11 +30,11 @@
 			var reloadInterval;
 
 			function clearLog() {
-				if(confirm("Are you sure you want to clear the log?")) {
+				//if(confirm("Are you sure you want to clear the log?")) {
 					$.get(`/Log/Clear?log=${log}`, function() {
 						reloadIframe();
 					});
-				}
+				//}
 			}
 			
 			function reloadIframe() {
