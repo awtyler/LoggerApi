@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using DotNetEnv;
 
 namespace log_webapi
 {
@@ -36,8 +37,8 @@ namespace log_webapi
                 app.UseDeveloperExceptionPage();
             }
 
-	    app.UseStaticFiles();
-
+	    DotNetEnv.Env.Load();
+ 
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -48,6 +49,9 @@ namespace log_webapi
             {
                 endpoints.MapControllers();
             });
-        }
+	
+	    app.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = new List<string> { "index.html" } });
+	    app.UseStaticFiles();
+	}
     }
 }

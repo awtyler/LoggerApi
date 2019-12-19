@@ -21,8 +21,6 @@ namespace log_webapi.Controllers
 	    if(!history.Keys.Contains("default")) history["default"] = new List<String>();
 	}
 
-        
-
         [HttpPost]
         public String Post([FromBody] String text, String log = "default") {
             try {
