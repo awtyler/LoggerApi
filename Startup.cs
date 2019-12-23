@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using DotNetEnv;
 
 namespace log_webapi
 {
@@ -37,9 +37,12 @@ namespace log_webapi
                 app.UseDeveloperExceptionPage();
             }
 
-	    DotNetEnv.Env.Load();
- 
-            app.UseHttpsRedirection();
+	    app.UseForwardedHeaders(new ForwardedHeadersOptions
+	    {
+	    	ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+	    });
+
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography.X509Certificates;
-using DotNetEnv;
 
 namespace log_webapi
 {
@@ -23,16 +22,6 @@ namespace log_webapi
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
 		    webBuilder.UseStartup<Startup>();
-             	    DotNetEnv.Env.Load();
-		    webBuilder.UseUrls(DotNetEnv.Env.GetString("URLS"));
-                    webBuilder.ConfigureKestrel(serverOptions => 
-                    {
-                        serverOptions.ConfigureHttpsDefaults(listenOptions => 
-                        {
-                            X509Certificate2 certificate = new X509Certificate2(DotNetEnv.Env.GetString("CERT_FILE"));
-                            listenOptions.ServerCertificate = certificate;
-                        });
-                    });
                 });
     }
 }
