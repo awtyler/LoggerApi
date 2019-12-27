@@ -19,7 +19,18 @@
 					<h1 class="float-left">Log View</h1>
 					<span class="float-left"><select class="custom-select mt-2 ml-5" id="logSelect" onchange="selectChanged(this)"></select></span>
 					<button id="reloadButton" onclick="toggleReloadLogContents();" class="mt-2 ml-2 btn btn-success float-right">Start Reload</button>
-					<button onclick="clearLog();" class="mt-2 btn btn-danger float-right">Clear Log</button>
+					<button onclick="clearLog();" class="mt-2 ml-2 btn btn-danger float-right">Clear Log</button>
+					<button onclick="$('#filterHeader').toggle()" class="mt-2 btn btn-info float-right">Toggle Filter</button>
+				</div>
+				<div id="filterHeader">
+					<div class="card-header d-flex flex-row">
+						<h3 class="float-left p-0 mt-1">
+							<span class="small">Filter</span>
+						</h3>
+						<input type="text" class="m-1 ml-2 flex-fill p-0 pl-2 pr-2 form-control" id="searchText">
+						<button id="reloadButton" onclick="$('#searchText').val(''); filterLog();" class="mt-1 ml-2 btn btn-danger btn-sm float-right" style="white-space: nowrap;">Clear Filter</button>
+						<button id="reloadButton" onclick="filterLog();" class="mt-1 ml-2 btn btn-success btn-sm float-right">Filter</button>
+					</div>
 				</div>
 				<div class="card-body d-flex flex-column p-0">
 					<pre id="logContents" class="w-100 h-100 flex-grow-1 m-0 p-0 pl-2 pr-2" style="border: none;"></pre>

@@ -1,5 +1,6 @@
 
 var log = "default"
+var logText = ""
 
 $(document).ready(function() {
 	toastr.options = {
@@ -24,7 +25,6 @@ $(document).ready(function() {
 	if(queryparams["log"]) {
 		log = queryparams["log"];
 	}
-
 	reloadLogContents();
 });
 
@@ -81,22 +81,22 @@ function reloadLogNames() {
 var reloadInterval;
 
 function clearLog() {
-	//if(confirm("Are you sure you want to clear the log?")) {
-		$.get(`/Log/Clear?log=${log}`, function() {
-			reloadLogContents();
-		});
-	//}
+	$.get(`/Log/Clear?log=${log}`, function() {
+		reloadLogContents();
+	});
 }
 
 function reloadLogContents() {
 	//Check whether it's currently scrolled to the bottom of the log
 	let logPre = document.getElementById("logContents");
 	let isScrolledToBottom = logPre.scrollTop >= logPre.scrollHeight - logPre.clientHeight;
-	$("#logContents").load(`/ShowLog?log=${log}`, function() {
+	$("#logContents").load(`/ShowLog?log=${log}`, function(data) {
 		//Scroll to bottom of div
 		if(isScrolledToBottom) {	//Scroll to bottom, if it was previously at the bottom
 			logPre.scrollTop = logPre.scrollHeight;
 		}
+		logText = data;
+		filterLog();
 	})
 	reloadLogNames();
 }
@@ -115,11 +115,35 @@ function toggleReloadLogContents() {
 
 }
 
-function scrollIframe(frame) {
-	frame.contentWindow.scrollBy(0, 100000);
-}
-
 function selectChanged(field) {
 	log = field.value;
 	reloadLogContents();
+}
+
+function filterLog(filter) {
+	let logPre = $("#logContents");
+
+	if(!filter || filter == "") {
+		filter = $("#searchText").val()
+	}
+
+	filter = filter.toLowerCase ? filter.toLowerCase() : "";
+
+	let text = logText
+
+	if(!filter || filter == "") {
+		logPre.html(text);
+		return;
+	}
+
+	let tarray = text.split("\n");
+	let output = []
+	for(line of tarray) {
+		if(line.toLowerCase().indexOf(filter) >= 0) {
+			output.push(line);
+		}
+	}
+
+	let outputText = output.join("\n");
+	logPre.html(outputText);
 }
