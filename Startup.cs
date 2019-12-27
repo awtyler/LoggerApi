@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,9 +37,12 @@ namespace log_webapi
                 app.UseDeveloperExceptionPage();
             }
 
-	    app.UseStaticFiles();
+	    app.UseForwardedHeaders(new ForwardedHeadersOptions
+	    {
+	    	ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+	    });
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -48,6 +52,9 @@ namespace log_webapi
             {
                 endpoints.MapControllers();
             });
-        }
+	
+	    app.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = new List<string> { "index.html" } });
+	    app.UseStaticFiles();
+	}
     }
 }

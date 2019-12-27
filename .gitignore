@@ -351,3 +351,6 @@ MigrationBackup/
 
 # VSCode Settings
 .vscode/
+
+# Environment Variables File
+.env

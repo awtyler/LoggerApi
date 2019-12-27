@@ -21,16 +21,7 @@ namespace log_webapi
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
-		    webBuilder.UseUrls("https://home.tylerinternet.com:5001;http://home.tylerinternet.com:5000");
-                    webBuilder.ConfigureKestrel(serverOptions => 
-                    {
-                        serverOptions.ConfigureHttpsDefaults(listenOptions => 
-                        {
-                            X509Certificate2 certificate = new X509Certificate2("/etc/letsencrypt/live/home.tylerinternet.com/x509cert2.pfx");
-                            listenOptions.ServerCertificate = certificate;
-                        });
-                    });
+		    webBuilder.UseStartup<Startup>();
                 });
     }
 }
