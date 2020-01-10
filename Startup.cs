@@ -27,6 +27,8 @@ namespace log_webapi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddOptions();
+            services.Configure<LoggerConfiguration>(Configuration.GetSection("LogStorage"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
