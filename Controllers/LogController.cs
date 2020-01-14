@@ -45,9 +45,6 @@ namespace log_webapi.Controllers
             var items = history[log];
 
             items.Sort(delegate(LogEntry a, LogEntry b) {
-                // if(a.date == null && b.date == null) return 0;
-                // if(a.date == null && b.date != null) return 1;
-                // if(a.date != null && b.date == null) return -1;
                 return (a.date).CompareTo(b.date);
             });
 
