@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using log_webapi.Model;
 
 namespace log_webapi.Controllers
 {
@@ -18,20 +19,25 @@ namespace log_webapi.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet("{log}")]
         public String Get(String log)
         {
 
             var pft = "";
 
             if(LogController.history.Keys.Contains(log)) {
-                var history = LogController.history[log];
+                var entries = LogController.history[log];
 
-                if(history.Count == 0) {
+                if(entries.Count == 0) {
                     pft = "No log entries";
                 } else {
-                    for(int i = 0; i < history.Count; i++) {
-                        pft += history[i] + "\n";
+
+                    entries.Sort(delegate(LogEntry a, LogEntry b) {
+                        return (a.date).CompareTo(b.date);
+                    });
+
+                    foreach(LogEntry entry in entries) {
+                        pft += entry.ToString(log) + "\n";
                     }
                 }
             } else {
