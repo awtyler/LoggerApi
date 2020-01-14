@@ -8,7 +8,7 @@ namespace log_webapi.Model {
 		public String text { get; set; }
 
 		public String ToString(String logName) {
-			return $"[{date.ToShortDateString()} {date.ToLongTimeString()}] [{logName}] {text}";
+			return $"[{date.ToString("yyyy-MM-dd HH:mm:ss.fffff")}] [{logName}] {text}";
 		}
 
 		public LogEntry() { 
