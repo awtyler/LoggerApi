@@ -32,9 +32,7 @@ namespace log_webapi.Controllers
                     pft = "No log entries";
                 } else {
 
-                    entries.Sort(delegate(LogEntry a, LogEntry b) {
-                        return (a.date).CompareTo(b.date);
-                    });
+                    entries.Sort();
 
                     foreach(LogEntry entry in entries) {
                         pft += entry.ToString(log) + "\n";

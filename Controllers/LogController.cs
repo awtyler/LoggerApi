@@ -44,9 +44,7 @@ namespace log_webapi.Controllers
         {
             var items = history[log];
 
-            items.Sort(delegate(LogEntry a, LogEntry b) {
-                return (a.date).CompareTo(b.date);
-            });
+            items.Sort();
 
             var output = new List<String>();
             foreach(LogEntry entry in items) {
