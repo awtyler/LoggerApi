@@ -5,6 +5,7 @@ using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using log_webapi.Model;
 
 namespace log_webapi.Controllers
 {
@@ -12,7 +13,7 @@ namespace log_webapi.Controllers
     [Route("[controller]")]
     public class LogController : ControllerBase
     {
-        public static Dictionary<String, List<String>> history = new Dictionary<String, List<String>>();
+        public static Dictionary<String, List<LogEntry>> history = new Dictionary<String, List<LogEntry>>();
 
         private readonly ILogger<LogController> _logger;
         private readonly IOptions<LoggerConfiguration> _config;
@@ -21,25 +22,44 @@ namespace log_webapi.Controllers
         {
             _logger = logger;
             _config = config;
-	        if(!history.Keys.Contains("default")) history["default"] = new List<String>();
+	        if(!history.Keys.Contains("default")) history["default"] = new List<LogEntry>();
 	    }
 
-        [HttpPost]
-        public String Post([FromBody] String text, String log = "default") {
+        [HttpPost("{log}")]
+        public String Post([FromBody] LogEntry entry, String log = "default") {
+            // entry = new LogEntry(entry);
             try {
-                var logText = $"[{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}] [{log}] {text}";
-                Console.WriteLine(logText);
+                Console.WriteLine("Entry: " + entry != null ? entry.ToString(log) : "null");
 
-                if(!history.Keys.Contains(log)) history.Add(log, new List<String>());
-                history[log].Add(logText);
+                if(!history.Keys.Contains(log)) history.Add(log, new List<LogEntry>());
+                history[log].Add(entry);
                 return "{ \"success\": true, \"message\": \"Logged\" }";
             } catch(Exception ex) {
                 return "{ \"success\": false, \"message\": \"" + ex.Message + "\" }";
             }
         }
 
-        [HttpGet]
-        public List<String> Get(String log = "default")
+        [HttpGet("{log}")]
+        public List<String> GetAsString(String log = "default")
+        {
+            var items = history[log];
+
+            items.Sort(delegate(LogEntry a, LogEntry b) {
+                // if(a.date == null && b.date == null) return 0;
+                // if(a.date == null && b.date != null) return 1;
+                // if(a.date != null && b.date == null) return -1;
+                return (a.date).CompareTo(b.date);
+            });
+
+            var output = new List<String>();
+            foreach(LogEntry entry in items) {
+                output.Add(entry.ToString(log));
+            }
+            return output;
+        }
+
+        [HttpGet("{log}/json")]
+        public List<LogEntry> GetAsJson(String log = "default")
         {
             var items = history[log];
             return items;
@@ -71,7 +91,7 @@ namespace log_webapi.Controllers
                 System.IO.Directory.CreateDirectory(path);
 
                 System.Console.WriteLine("Writing to log: " + Path.Combine(path, filename));
-                System.IO.File.AppendAllLines(Path.Combine(path, filename), history[log]);
+                System.IO.File.AppendAllLines(Path.Combine(path, filename), history[log].Select(entry => entry.ToString(log)));
 
             } catch(Exception ex) { 
                 System.Console.WriteLine("Error writing file: " + ex.Message);
@@ -79,7 +99,7 @@ namespace log_webapi.Controllers
 
 
             try {
-                history[log] = new List<String>();
+                history[log] = new List<LogEntry>();
                 return "{ \"success\": true, \"message\": \"Cleared\" }";
             } catch(Exception ex) {
                 return "{ \"success\": false, \"message\": \"" + ex.Message + "\" }";
