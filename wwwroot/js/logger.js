@@ -90,7 +90,7 @@ function reloadLogContents() {
 	//Check whether it's currently scrolled to the bottom of the log
 	let logPre = document.getElementById("logContents");
 	let isScrolledToBottom = logPre.scrollTop >= logPre.scrollHeight - logPre.clientHeight;
-	$("#logContents").load(`/ShowLog?log=${log}`, function(data) {
+	$("#logContents").load(`/ShowLog/${log}`, function(data) {
 		//Scroll to bottom of div
 		if(isScrolledToBottom) {	//Scroll to bottom, if it was previously at the bottom
 			logPre.scrollTop = logPre.scrollHeight;
